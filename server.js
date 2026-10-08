@@ -35,6 +35,11 @@ const loadStores = () => {
 
 // --- ROUTES ---
 
+// Root endpoint (Fixes Cannot GET /)
+app.get('/', (req, res) => {
+  res.status(200).send('DashEats Middleware Server is running!');
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
@@ -69,7 +74,7 @@ app.post('/api/admin/store-config', (req, res) => {
 // DoorDash Webhook Route
 app.post('/api/webhooks/doordash', (req, res) => {
   console.log('[WEBHOOK] DoorDash payload received:', req.body);
-  
+
   const order = {
     id: req.body.merchant_order_reference_id || `DD-${Date.now()}`,
     platform: 'DoorDash',
@@ -103,7 +108,7 @@ app.post('/api/webhooks/uber', (req, res) => {
 // Socket.IO Connection Event
 io.on('connection', (socket) => {
   console.log('[SOCKET] Client connected to DashEats backend:', socket.id);
-  
+
   socket.on('disconnect', () => {
     console.log('[SOCKET] Client disconnected:', socket.id);
   });
